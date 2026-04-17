@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GO-008 Wireframe v5 — Add Adhoc GO | HUNGRY Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue:     #3d4b53;
+  --orange:   #fe5f52;
+  --magenta:  #ee356c;
+  --teal:     #0AB783;
+  --grey:     #f4f4f4;
+  --white:    #ffffff;
+  --gradient: linear-gradient(90deg, #fe5f52 0%, #ee356c 100%);
+  --border:   #e5e7eb;
+  --text:     #1a1a2e;
+  --muted:    #6b7280;
+  --font:     'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); font-size: 13px; color: var(--text); display: flex; height: 100vh; overflow: hidden; background: #f0f2f5; }
+
+/* ── SIDEBAR ── */
+.sidebar { width: 176px; background: var(--blue); display: flex; flex-direction: column; flex-shrink: 0; }
+.sidebar-page-title { background: rgba(0,0,0,0.2); padding: 13px 14px; color: white; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.sidebar-back { color: rgba(255,255,255,0.45); cursor: pointer; font-size: 14px; }
+.sidebar-section-hd { padding: 14px 14px 4px; font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.8px; }
+.sidebar-item { display: block; padding: 8px 14px; color: rgba(255,255,255,0.7); font-size: 12.5px; cursor: pointer; text-decoration: none; font-weight: 400; transition: all 0.12s; }
+.sidebar-item:hover { background: rgba(255,255,255,0.07); color: white; }
+.sidebar-item.active { color: white; font-weight: 600; }
+
+/* ── MAIN ── */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* ── TOPBAR ── */
+.topbar { background: white; border-bottom: 1px solid var(--border); padding: 0 20px; height: 38px; display: flex; align-items: center; justify-content: flex-end; gap: 20px; font-size: 12px; color: var(--muted); flex-shrink: 0; }
+.topbar a { color: var(--orange); text-decoration: none; font-weight: 500; }
+.topbar-user { display: flex; align-items: center; gap: 6px; color: var(--text); font-weight: 500; cursor: pointer; }
+.topbar-user::after { content: '▾'; font-size: 10px; color: var(--muted); }
+.avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--gradient); color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
+
+/* ── CLIENT HEADER ── */
+.client-header { background: white; border-bottom: 1px solid var(--border); padding: 12px 20px; flex-shrink: 0; }
+.field-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 2px; }
+.field-val { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+.loc-select { border: 1px solid #d1d5db; border-radius: 4px; padding: 6px 32px 6px 10px; font-size: 13px; width: 100%; max-width: 520px; color: var(--text); background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236b7280' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") no-repeat right 10px center; appearance: none; font-family: var(--font); }
+
+/* ── TABS ── */
+.tabs { background: white; border-bottom: 1px solid var(--border); padding: 0 20px; display: flex; flex-shrink: 0; }
+.tab { padding: 10px 14px; font-size: 12.5px; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; font-weight: 500; transition: all 0.12s; }
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--orange); border-bottom-color: var(--orange); font-weight: 600; }
+
+/* ── CONTENT ── */
+.content { flex: 1; overflow: hidden; display: flex; }
+.left-col { width: 52%; overflow-y: auto; background: white; padding: 20px; border-right: 1px solid var(--border); }
+.right-col { flex: 1; overflow-y: auto; background: white; padding: 20px; }
+
+/* ── SECTION HEADERS ── */
+.sec-hd { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--orange); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+
+/* ── FIELD GRID ── */
+.field-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0 12px; margin-bottom: 18px; border-bottom: 1px solid var(--grey); padding-bottom: 14px; }
+.f-cell { padding: 6px 0 10px; }
+.f-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--muted); margin-bottom: 3px; }
+.f-val { font-size: 13px; color: var(--text); font-weight: 500; }
+
+/* ── ADHOC SECTION (in left col, above settings) ── */
+.adhoc-banner { border: 1.5px solid var(--border); border-radius: 6px; margin-bottom: 16px; background: #fff9f9; overflow: hidden; }
+.adhoc-banner-inner { padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.adhoc-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.adhoc-desc { font-size: 12px; color: var(--muted); }
+.btn-adhoc { background: var(--gradient); color: white; border: none; border-radius: 6px; padding: 8px 16px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; font-family: var(--font); }
+.btn-adhoc:hover { opacity: 0.9; }
+
+/* ── COLLAPSIBLE GO SECTIONS ── */
+.go-section-hd { cursor: pointer; user-select: none; }
+.go-section-hd .collapse-arrow { margin-left: auto; font-size: 11px; transition: transform 0.2s; display: inline-block; }
+.go-section-hd.collapsed .collapse-arrow { transform: rotate(-90deg); }
+.go-section-body.collapsed { display: none; }
+
+/* ── SETTINGS BLOCKS ── */
+.settings-block { border: 1px solid var(--border); border-radius: 4px; margin-bottom: 8px; }
+.settings-block-hd { padding: 9px 13px; display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text); }
+.settings-block-body { padding: 10px 13px; border-top: 1px solid var(--grey); font-size: 13px; color: var(--muted); }
+.btn-edit { border: 1px solid var(--border); background: white; border-radius: 4px; padding: 3px 9px; font-size: 11px; color: var(--muted); cursor: pointer; font-family: var(--font); display: flex; align-items: center; gap: 4px; }
+.btn-edit:hover { background: var(--grey); }
+.cb-row { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; font-size: 12.5px; color: #444; }
+.cb-row input { accent-color: var(--teal); }
+
+/* ── CALENDAR (right col) ── */
+.cal-nav-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.cal-month-label { font-size: 15px; font-weight: 700; color: var(--text); }
+.cal-arrow { background: none; border: 1px solid var(--border); border-radius: 4px; width: 26px; height: 26px; cursor: pointer; color: var(--muted); font-size: 14px; display: flex; align-items: center; justify-content: center; }
+.cal-arrow:hover { background: var(--grey); }
+.cal-dow { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; margin-bottom: 2px; }
+.cal-dow div { font-size: 10px; font-weight: 600; color: var(--muted); padding: 3px 0; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: 14px; }
+.cc { text-align: center; padding: 5px 2px; font-size: 12px; color: var(--text); cursor: pointer; border-radius: 3px; font-weight: 500; }
+.cc:hover { background: #e6faf4; }
+.cc.go { background: #b2f0df; color: #065f46; font-weight: 600; border-radius: 3px; }
+.cc.today { background: var(--orange); color: white; border-radius: 50%; font-weight: 700; }
+.cc.sel { outline: 2px solid var(--teal); outline-offset: -1px; border-radius: 3px; }
+.cc.empty { color: #d1d5db; cursor: default; pointer-events: none; }
+.cc.adhoc-day { background: #fde8e8; color: #991b1b; font-weight: 700; }
+.cc.adhoc-day.go { background: linear-gradient(135deg, #b2f0df 50%, #fde8e8 50%); color: #374151; }
+
+/* ── DAY DETAIL ── */
+.day-detail-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+.day-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+.day-tab { padding: 6px 11px; font-size: 12px; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; font-weight: 500; }
+.day-tab.active { color: var(--teal); border-bottom-color: var(--teal); font-weight: 600; }
+.input-row { margin-bottom: 10px; }
+.input-row label { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--muted); margin-bottom: 4px; }
+.input-row input { border: 1px solid #d1d5db; border-radius: 4px; padding: 6px 9px; font-size: 13px; width: 100%; font-family: var(--font); color: var(--text); }
+.btn-search { background: var(--teal); color: white; border: none; border-radius: 4px; padding: 8px 16px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; margin-bottom: 10px; font-family: var(--font); }
+.cb-inline { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #444; margin-bottom: 12px; }
+.cb-inline input { accent-color: var(--orange); width: 14px; height: 14px; }
+.go-section { margin-bottom: 14px; }
+.go-section-hd { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 6px 10px; border-radius: 4px 4px 0 0; display: flex; align-items: center; gap: 6px; }
+.go-section-hd.recurring { background: #d1fae5; color: #065f46; }
+.go-section-hd.adhoc { background: var(--gradient); color: white; }
+.go-section-body { border: 1px solid var(--border); border-top: none; border-radius: 0 0 4px 4px; }
+.menu-legend { display: flex; gap: 14px; font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+.dot-pink { background: #f9a8d4; }
+.dot-yellow { background: #fcd34d; }
+.menu-counts { border: 1px solid var(--border); border-radius: 4px; padding: 9px 11px; margin-bottom: 8px; font-size: 12.5px; }
+.count-row { display: flex; justify-content: space-between; margin-bottom: 3px; }
+.count-row span:last-child { color: var(--teal); font-weight: 700; }
+.restaurant-card { border: 1px solid var(--border); border-radius: 4px; margin-bottom: 6px; }
+.rc-hd { padding: 9px 12px; display: flex; justify-content: space-between; align-items: center; background: var(--grey); border-radius: 4px 4px 0 0; }
+.rc-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.rc-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.btn-del { background: var(--orange); color: white; border: none; border-radius: 4px; padding: 4px 9px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: var(--font); }
+.menu-row { padding: 9px 12px; border-top: 1px solid var(--grey); display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.menu-row-name { font-size: 12.5px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+.menu-row-meta { font-size: 11px; color: var(--muted); }
+.badge-cutoff { background: #fde8e8; color: var(--orange); border: 1px solid #fca5a5; border-radius: 3px; padding: 2px 6px; font-size: 10.5px; font-weight: 700; margin-top: 4px; display: inline-block; }
+.price-tag { background: var(--teal); color: white; border-radius: 4px; padding: 4px 9px; font-size: 12.5px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+.restaurant-card.adhoc-card { border-color: #fca5a5; }
+.restaurant-card.adhoc-card .rc-hd { background: #fff5f5; }
+.restaurant-card.adhoc-card .rc-name { color: var(--orange); }
+
+/* ══════════════════════════════════════
+   MODAL — all v4 improvements
+══════════════════════════════════════ */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
+.overlay.open { display: flex; }
+.modal { background: white; border-radius: 8px; width: 760px; max-width: 96vw; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.22); }
+.modal-hd { background: var(--gradient); padding: 14px 18px; color: white; display: flex; justify-content: space-between; align-items: flex-start; flex-shrink: 0; }
+.modal-hd-title { font-size: 15px; font-weight: 700; }
+.modal-hd-sub { font-size: 11.5px; opacity: 0.85; margin-top: 3px; }
+.modal-close { background: rgba(255,255,255,0.2); border: none; color: white; width: 26px; height: 26px; border-radius: 50%; font-size: 14px; cursor: pointer; font-family: var(--font); }
+.modal-close:hover { background: rgba(255,255,255,0.3); }
+
+.step-bar { display: flex; background: var(--grey); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.step-item { flex: 1; padding: 9px 8px; font-size: 11.5px; color: #aaa; display: flex; align-items: center; gap: 6px; position: relative; }
+.step-item:not(:last-child)::after { content: '›'; position: absolute; right: 0; top: 50%; transform: translateY(-50%); color: #ddd; font-size: 16px; }
+.step-item.active { color: var(--text); font-weight: 700; }
+.step-item.done { color: var(--teal); }
+.step-n { width: 20px; height: 20px; border-radius: 50%; border: 2px solid currentColor; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+.step-item.done .step-n { background: var(--teal); border-color: var(--teal); color: white; }
+.step-item.active .step-n { background: var(--gradient); border: none; color: white; }
+
+.modal-body { flex: 1; overflow-y: auto; padding: 18px; }
+.modal-foot { padding: 12px 18px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; background: white; }
+
+/* Form */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+.fg { display: flex; flex-direction: column; gap: 4px; }
+.fg label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--muted); }
+.fg input, .fg select { border: 1px solid #d1d5db; border-radius: 4px; padding: 7px 9px; font-size: 13px; color: var(--text); width: 100%; font-family: var(--font); }
+.fg input:disabled { background: var(--grey); color: var(--muted); }
+.fg .hint { font-size: 11px; color: var(--muted); }
+.fg .hint.warn { color: #b45309; }
+
+/* Constraint badge */
+.con-tag { display: inline-flex; align-items: center; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 10px; padding: 1px 7px; font-size: 10px; color: #92400e; font-weight: 600; margin-left: 5px; }
+
+/* Subsidy inherit box */
+.subsidy-box { background: #f0fdf9; border: 1px solid #a7f3d0; border-radius: 5px; padding: 10px 12px; margin-bottom: 14px; }
+.subsidy-box .sb-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--teal); margin-bottom: 6px; }
+.subsidy-box .sb-row { display: flex; gap: 20px; flex-wrap: wrap; font-size: 12px; color: #065f46; }
+.subsidy-box .sb-row strong { font-weight: 700; }
+
+/* Step 2 — search-first menus */
+.menu-search-bar { display: flex; gap: 8px; margin-bottom: 12px; }
+.menu-search-input { flex: 1; border: 1.5px solid #d1d5db; border-radius: 5px; padding: 8px 11px; font-size: 13px; font-family: var(--font); }
+.menu-search-input:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(10,183,131,0.1); }
+.btn-go { background: var(--teal); color: white; border: none; border-radius: 5px; padding: 8px 16px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: var(--font); }
+.menu-empty-state { text-align: center; padding: 36px 20px; color: #aaa; background: #fafafa; border: 1px dashed var(--border); border-radius: 6px; font-size: 13px; }
+.menu-empty-state .ei { font-size: 28px; margin-bottom: 8px; }
+
+/* UGOM inherited box */
+.ugom-box { border: 1px solid var(--border); border-radius: 5px; margin-bottom: 14px; overflow: hidden; }
+.ugom-box-hd { background: var(--grey); padding: 9px 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
+.ugom-box-hd-left { display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text); }
+.ugom-box-hd-right { display: flex; align-items: center; gap: 8px; }
+.ugom-chevron { font-size: 11px; color: var(--muted); transition: transform 0.2s; }
+.ugom-chevron.open { transform: rotate(180deg); }
+.ugom-body { padding: 12px; display: none; }
+.ugom-body.open { display: block; }
+.ugom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; margin-bottom: 10px; }
+.ugom-item { font-size: 12px; color: var(--text); }
+.ugom-item .ul { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--muted); margin-bottom: 3px; }
+.ugom-item .uv { font-weight: 500; }
+.ugom-item .uv.none { color: var(--muted); font-style: italic; }
+.ugom-checks { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.ugom-check { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text); }
+.ugom-check .ck { width: 14px; height: 14px; border-radius: 3px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+.ugom-check .ck.on { background: var(--orange); color: white; }
+.ugom-check .ck.off { background: #e5e7eb; color: var(--muted); }
+.ugom-excl { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; }
+.ugom-excl-tag { background: #fde8e8; border: 1px solid #fca5a5; border-radius: 10px; padding: 2px 8px; font-size: 11px; color: #991b1b; }
+.ugom-blacklist-row { display: flex; gap: 8px; }
+.ugom-bl-pill { border: 1px solid var(--border); border-radius: 4px; padding: 4px 10px; font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.ugom-bl-pill .ct { background: var(--orange); color: white; border-radius: 50%; width: 17px; height: 17px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
+.ugom-read-only-note { font-size: 11px; color: var(--muted); margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--grey); }
+
+/* Editable UGOM overrides (Step 2) */
+.ugom-inherited-note { font-size: 11.5px; color: #065f46; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 4px; padding: 7px 10px; margin-bottom: 12px; }
+.ugom-edit-checks { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 12px; }
+.ugom-cb-label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text); cursor: pointer; font-weight: 500; }
+.ugom-cb-label input[type=checkbox] { accent-color: var(--teal); width: 15px; height: 15px; cursor: pointer; }
+.ugom-price-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0 12px; margin-bottom: 12px; }
+.ugom-excl-edit { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; border: 1.5px solid #d1d5db; border-radius: 5px; padding: 6px 8px; min-height: 38px; cursor: text; }
+.ugom-excl-tag-edit { background: #fde8e8; border: 1px solid #fca5a5; border-radius: 10px; padding: 2px 8px 2px 10px; font-size: 11.5px; color: #991b1b; display: flex; align-items: center; gap: 4px; }
+.excl-remove { background: none; border: none; color: #991b1b; cursor: pointer; font-size: 11px; padding: 0 2px; line-height: 1; font-weight: 700; }
+.excl-remove:hover { color: #7f1d1d; }
+.ugom-excl-input { border: none; outline: none; font-size: 12px; min-width: 130px; font-family: var(--font); color: var(--text); background: transparent; }
+.ugom-blacklist-row-edit { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; margin-bottom: 12px; }
+.ugom-override-badge { font-size: 11.5px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 4px; padding: 6px 10px; color: #92400e; margin-top: 4px; }
+.btn-reset-ugom { background: none; border: 1px solid var(--border); border-radius: 4px; padding: 3px 9px; font-size: 11px; color: var(--muted); cursor: pointer; font-family: var(--font); white-space: nowrap; }
+.btn-reset-ugom:hover { background: var(--grey); }
+
+/* ── MENU ITEM PREVIEW (within search results) ── */
+.menu-preview-row > td { padding: 0 !important; border-bottom: 2px solid var(--teal) !important; }
+.preview-header { padding: 7px 12px; background: #f0f5f4; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; }
+.preview-header .ph-allowed { color: #065f46; font-weight: 600; }
+.preview-header .ph-filtered { color: #92400e; font-weight: 600; }
+.item-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.item-table thead th { background: var(--teal); color: white; padding: 7px 10px; text-align: left; font-size: 11px; font-weight: 600; white-space: nowrap; letter-spacing: 0.2px; }
+.item-table tbody td { padding: 7px 10px; border-bottom: 1px solid var(--grey); vertical-align: middle; white-space: nowrap; }
+.item-table tbody tr:last-child td { border-bottom: none; }
+.item-table tbody tr.item-ok:hover td { background: #f6fdfa; }
+.item-table tbody tr.item-filtered td { background: #fef9f9; color: #bbb; }
+.item-table tbody tr.item-filtered .diet-pill { background: #f3f3f3; color: #bbb; }
+.ugom-filter-reason { background: #fee2e2; border: 1px solid #fca5a5; border-radius: 4px; padding: 2px 7px; font-size: 10.5px; color: #991b1b; white-space: nowrap; }
+.item-name-ok { font-weight: 600; color: var(--text); }
+.item-name-filtered { font-weight: 600; color: #bbb; text-decoration: line-through; }
+.chevron-preview { color: var(--teal); font-size: 11px; cursor: pointer; user-select: none; padding: 2px 4px; border-radius: 3px; transition: background 0.1s; }
+.chevron-preview:hover { background: #e6faf4; }
+
+/* Dietary filter tags */
+.diet-filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.df-tag { border: 1px solid var(--border); border-radius: 12px; padding: 4px 11px; font-size: 11.5px; color: var(--muted); cursor: pointer; background: white; font-family: var(--font); font-weight: 500; transition: all 0.12s; }
+.df-tag:hover { border-color: var(--teal); color: var(--teal); }
+.df-tag.active { background: var(--teal); color: white; border-color: var(--teal); font-weight: 600; }
+
+/* Scroll hint on table */
+.table-scroll-hint { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); margin-bottom: 5px; }
+.table-scroll-hint .arrow-anim { display: inline-flex; align-items: center; gap: 3px; background: #f0fdf9; border: 1px solid #a7f3d0; border-radius: 10px; padding: 2px 8px; color: var(--teal); font-weight: 600; animation: nudge 1.8s ease-in-out infinite; }
+@keyframes nudge { 0%,100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
+
+/* Menu table (matches production component) */
+.menu-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 6px; }
+.menu-table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 900px; }
+.menu-table thead tr { background: var(--teal); color: white; }
+.menu-table thead th { padding: 9px 10px; text-align: left; font-weight: 700; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap; }
+.menu-table tbody tr { border-bottom: 1px solid #f0f2f5; transition: background 0.1s; }
+.menu-table tbody tr:hover { background: #f7fffe; }
+.menu-table tbody tr.sel-row { background: #f0fdf9; }
+.menu-table tbody td { padding: 8px 10px; vertical-align: middle; }
+.menu-table .mn { font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 6px; }
+.menu-table .mn .chevron { color: var(--muted); font-size: 11px; cursor: pointer; }
+.btn-add-pill { background: var(--teal); color: white; border: none; border-radius: 12px; padding: 3px 10px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: var(--font); white-space: nowrap; }
+.btn-add-pill:hover { opacity: 0.85; }
+.btn-add-pill.added { background: #e53e3e; }
+.diet-pill { background: #e6faf4; color: #065f46; border-radius: 10px; padding: 2px 7px; font-size: 11px; display: inline-block; margin: 1px; }
+.more-pill { background: #e6faf4; color: #065f46; border-radius: 10px; padding: 2px 7px; font-size: 11px; display: inline-block; margin: 1px; cursor: pointer; }
+.mods-no { color: #e53e3e; font-size: 15px; }
+.mods-yes { color: var(--teal); font-weight: 700; font-size: 13px; }
+.cui-tag { display: inline-block; background: var(--grey); border-radius: 8px; padding: 1px 6px; font-size: 10.5px; color: #555; margin: 1px; }
+.selected-menus-box { background: #f0fdf9; border: 1px solid #a7f3d0; border-radius: 5px; padding: 10px 12px; margin-top: 12px; }
+.selected-menus-box h4 { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--teal); margin-bottom: 8px; }
+.sel-menu-item { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #d1fae5; font-size: 12.5px; color: #065f46; }
+.sel-menu-item:last-child { border-bottom: none; }
+.rm-btn { background: none; border: none; color: #e53e3e; cursor: pointer; font-size: 12px; }
+
+/* Step 3 — users */
+.user-mode-tabs { display: flex; border: 1px solid var(--border); border-radius: 5px; overflow: hidden; margin-bottom: 12px; }
+.umt { flex: 1; padding: 8px 12px; font-size: 12.5px; font-weight: 500; color: var(--muted); background: white; border: none; cursor: pointer; font-family: var(--font); text-align: center; transition: all 0.12s; }
+.umt.active { background: var(--teal); color: white; font-weight: 700; }
+
+.user-bar { display: flex; gap: 8px; margin-bottom: 8px; }
+.user-bar input { flex: 1; border: 1px solid #d1d5db; border-radius: 4px; padding: 7px 9px; font-size: 13px; font-family: var(--font); }
+.user-found-box { background: #f0fdf9; border: 1px solid #a7f3d0; border-radius: 4px; padding: 8px 12px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #065f46; }
+.user-error-box { background: #fff5f5; border: 1px solid #fca5a5; border-radius: 4px; padding: 8px 12px; margin-top: 8px; font-size: 13px; color: #b91c1c; }
+
+/* Bulk paste */
+.bulk-paste-area textarea { width: 100%; border: 1.5px solid #d1d5db; border-radius: 5px; padding: 9px 11px; font-size: 12.5px; color: var(--text); resize: vertical; min-height: 80px; font-family: monospace; margin-bottom: 8px; }
+.bulk-paste-area textarea:focus { outline: none; border-color: var(--teal); }
+.bulk-actions { display: flex; gap: 8px; }
+.bulk-result-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; border-radius: 4px; margin-bottom: 4px; font-size: 12.5px; }
+.bulk-result-item.found { background: #f0fdf9; border: 1px solid #a7f3d0; color: #065f46; }
+.bulk-result-item.not-found { background: #fff5f5; border: 1px solid #fca5a5; color: #b91c1c; }
+.bulk-result-item .rs { font-size: 11px; font-weight: 700; }
+.bulk-result-item.found .rs { color: var(--teal); }
+.bulk-result-item.not-found .rs { color: #e53e3e; }
+.bulk-summary { background: var(--grey); border: 1px solid var(--border); border-radius: 4px; padding: 8px 12px; margin-bottom: 8px; display: flex; gap: 16px; font-size: 12px; }
+.bulk-summary .fc { color: var(--teal); font-weight: 700; }
+.bulk-summary .nfc { color: #e53e3e; font-weight: 700; }
+
+/* Chips */
+.chip-list { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.chip { background: #e6faf4; border: 1px solid #a7f3d0; border-radius: 12px; padding: 3px 10px; font-size: 12px; color: #065f46; display: flex; align-items: center; gap: 5px; }
+.chip-x { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 12px; padding: 0; }
+
+/* Review */
+.review-block { background: var(--grey); border-radius: 4px; padding: 11px 13px; margin-bottom: 10px; }
+.review-block h4 { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 8px; }
+.review-row { display: flex; gap: 8px; font-size: 13px; margin-bottom: 4px; align-items: baseline; }
+.rl { font-weight: 600; color: #444; min-width: 120px; flex-shrink: 0; }
+.notif-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 6px; }
+.notif-box { background: #f0fdf9; border-left: 3px solid var(--teal); padding: 10px 12px; font-size: 13px; color: var(--text); line-height: 1.5; border-radius: 0 4px 4px 0; }
+.warn-box { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 4px; padding: 9px 12px; font-size: 12px; color: #92400e; margin-top: 10px; }
+.success-wrap { text-align: center; padding: 28px 0; display: none; }
+.success-wrap h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+.success-wrap p { font-size: 13px; color: var(--muted); }
+
+/* Buttons */
+.btn-primary { background: var(--gradient); color: white; border: none; border-radius: 5px; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font); }
+.btn-primary:hover { opacity: 0.9; }
+.btn-ghost { background: white; border: 1px solid var(--border); border-radius: 5px; padding: 8px 18px; font-size: 13px; color: var(--muted); cursor: pointer; font-family: var(--font); }
+.btn-ghost:hover { background: var(--grey); }
+.btn-teal { background: var(--teal); color: white; border: none; border-radius: 5px; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font); }
+.btn-confirm { background: var(--blue); color: white; border: none; border-radius: 5px; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font); }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-page-title"><span class="sidebar-back">←</span> Group Orders</div>
+  <div class="sidebar-section-hd">Clients</div>
+  <a class="sidebar-item active" href="#">Schedule Planner</a>
+  <a class="sidebar-item" href="#">Universal Menus Preview</a>
+  <a class="sidebar-item" href="#">Reports</a>
+</aside>
+
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <a href="#">New Request/Bug?</a>
+    <div class="topbar-user"><div class="avatar">AH</div> Amanda · Washington, DC (EDT)</div>
+    <span>Menu</span>
+  </div>
+
+  <!-- CLIENT HEADER -->
+  <div class="client-header">
+    <div class="field-lbl">Client</div>
+    <div class="field-val">Group Order Demo - East</div>
+    <div class="field-lbl">Selected Location</div>
+    <select class="loc-select">
+      <option>Standard Demo</option>
+      <option>East Side Office</option>
+    </select>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active">Client Details</div>
+    <div class="tab">Notification Settings</div>
+    <div class="tab">Default Schedule Settings</div>
+    <div class="tab">Calendar</div>
+    <div class="tab">SCIM</div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- LEFT: Client Details -->
+    <div class="left-col">
+      <div class="sec-hd">Client Details</div>
+
+      <div class="field-grid">
+        <div class="f-cell"><div class="f-lbl">Client</div><div class="f-val">Group Order Demo - East</div></div>
+        <div class="f-cell"><div class="f-lbl">Global Auth Code</div><div class="f-val">GRP-63614</div></div>
+        <div class="f-cell"><div class="f-lbl">Country</div><div class="f-val">US</div></div>
+        <div class="f-cell"><div class="f-lbl">Logo</div><div class="f-val" style="color:var(--muted)">None</div></div>
+      </div>
+
+      <div class="sec-hd" style="margin-top:2px;">Client Global Settings</div>
+
+      <div class="settings-block">
+        <div class="settings-block-hd">
+          Budget Per Person Settings
+          <button class="btn-edit">✏ Edit</button>
+        </div>
+        <div class="settings-block-body">
+          <div style="margin-bottom:6px;font-size:12.5px;">Global Budget Per Person</div>
+          <div style="color:var(--muted);font-style:italic;font-size:12px;">No global budget set</div>
+        </div>
+      </div>
+
+      <div class="settings-block">
+        <div class="settings-block-hd">Client Global Settings</div>
+        <div class="settings-block-body">
+          <div class="cb-row"><input type="checkbox" /> Limit # of Items Per Meal Period?</div>
+          <div class="cb-row"><input type="checkbox" /> Enable Flat Prices?</div>
+          <div class="cb-row"><input type="checkbox" /> Enable HUNGRY Wallet?</div>
+        </div>
+      </div>
+
+      <div class="settings-block">
+        <div class="settings-block-hd">
+          Client Global Delivery Fee Settings
+          <button class="btn-edit">✏ Edit</button>
+        </div>
+        <div class="settings-block-body">
+          <div style="margin-bottom:4px;font-size:12.5px;">Standard Fee</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5;">All Group Order accounts will be defaulted to the Standard Fee (1-9 meals = $125; 10-24 meals = $65; &gt;24 meals = Flat 15% Fee).</div>
+        </div>
+      </div>
+
+      <div class="settings-block">
+        <div class="settings-block-hd">
+          Client Global Staffing Fee Settings
+          <button class="btn-edit">✏ Edit</button>
+        </div>
+        <div class="settings-block-body" style="font-size:12px;">Set at location level</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Edit Menus & See Orders (calendar view) -->
+    <div class="right-col">
+      <div class="sec-hd">Edit Menus &amp; See Orders</div>
+
+      <!-- ✅ ADHOC GO ACTION — above calendar -->
+      <div class="adhoc-banner">
+        <div class="adhoc-banner-inner">
+          <div>
+            <div class="adhoc-title">Adhoc Group Orders</div>
+            <div class="adhoc-desc">Schedule a one-time GO on top of this program for a specific date &amp; location</div>
+          </div>
+          <button class="btn-adhoc" onclick="openModal()">Schedule Adhoc GO</button>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-bottom:10px;">
+        <span style="width:9px;height:9px;border-radius:50%;background:var(--teal);display:inline-block;"></span> Has menus and/or orders
+      </div>
+
+      <!-- Calendar -->
+      <div class="cal-nav-row">
+        <button class="cal-arrow">‹</button>
+        <span class="cal-month-label">April <strong>2026</strong></span>
+        <button class="cal-arrow">›</button>
+      </div>
+      <div class="cal-dow"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div>
+      <div class="cal-grid">
+        <div class="cc empty">29</div><div class="cc empty">30</div><div class="cc empty">31</div>
+        <div class="cc go" onclick="selDay(this,'Wed, April 1',true,false)">1</div>
+        <div class="cc go" onclick="selDay(this,'Thu, April 2',true,false)">2</div>
+        <div class="cc go" onclick="selDay(this,'Fri, April 3',true,false)">3</div>
+        <div class="cc" onclick="selDay(this,'Sat, April 4',false,false)">4</div>
+        <div class="cc" onclick="selDay(this,'Sun, April 5',false,false)">5</div>
+        <div class="cc go" onclick="selDay(this,'Mon, April 6',true,false)">6</div>
+        <div class="cc go" onclick="selDay(this,'Tue, April 7',true,false)">7</div>
+        <div class="cc go" onclick="selDay(this,'Wed, April 8',true,false)">8</div>
+        <div class="cc go" onclick="selDay(this,'Thu, April 9',true,false)">9</div>
+        <div class="cc go" onclick="selDay(this,'Fri, April 10',true,false)">10</div>
+        <div class="cc" onclick="selDay(this,'Sat, April 11',false,false)">11</div>
+        <div class="cc" onclick="selDay(this,'Sun, April 12',false,false)">12</div>
+        <div class="cc today sel" onclick="selDay(this,'Mon, April 13',false,false)">13</div>
+        <div class="cc" onclick="selDay(this,'Tue, April 14',false,false)">14</div>
+        <div class="cc go" onclick="selDay(this,'Wed, April 15',true,false)">15</div>
+        <div class="cc go adhoc-day" onclick="selDay(this,'Thu, April 16',true,true)">16</div>
+        <div class="cc go" onclick="selDay(this,'Fri, April 17',true,false)">17</div>
+        <div class="cc" onclick="selDay(this,'Sat, April 18',false,false)">18</div>
+        <div class="cc" onclick="selDay(this,'Sun, April 19',false,false)">19</div>
+        <div class="cc go" onclick="selDay(this,'Mon, April 20',true,false)">20</div>
+        <div class="cc go" onclick="selDay(this,'Tue, April 21',true,false)">21</div>
+        <div class="cc go" onclick="selDay(this,'Wed, April 22',true,false)">22</div>
+        <div class="cc go" onclick="selDay(this,'Thu, April 23',true,false)">23</div>
+        <div class="cc go" onclick="selDay(this,'Fri, April 24',true,false)">24</div>
+        <div class="cc" onclick="selDay(this,'Sat, April 25',false,false)">25</div>
+        <div class="cc" onclick="selDay(this,'Sun, April 26',false,false)">26</div>
+        <div class="cc go" onclick="selDay(this,'Mon, April 27',true,false)">27</div>
+        <div class="cc go" onclick="selDay(this,'Tue, April 28',true,false)">28</div>
+        <div class="cc go" onclick="selDay(this,'Wed, April 29',true,false)">29</div>
+        <div class="cc go" onclick="selDay(this,'Thu, April 30',true,false)">30</div>
+        <div class="cc empty">1</div><div class="cc empty">2</div>
+      </div>
+
+      <div style="display:flex;gap:16px;font-size:11px;color:var(--muted);margin-bottom:14px;flex-wrap:wrap;">
+        <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#b2f0df;margin-right:4px;vertical-align:middle;"></span>Recurring GO</span>
+        <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#fde8e8;border:1px solid #fca5a5;margin-right:4px;vertical-align:middle;"></span>Adhoc GO</span>
+      </div>
+
+      <!-- Day detail -->
+      <div class="day-detail-title" id="day-label">Edit menus &amp; view orders for <strong>Mon, April 13, 2026</strong></div>
+      <div class="day-tabs">
+        <div class="day-tab active">Menus</div>
+        <div class="day-tab">Orders</div>
+        <div class="day-tab">Racks</div>
+        <div class="day-tab">Audits</div>
+        <div class="day-tab">Payments</div>
+        <div class="day-tab">Chef Payouts</div>
+      </div>
+
+      <div class="input-row"><label>Cutoff Time (EDT)</label><input type="text" value="Apr 13, 2026 5:00 PM" /></div>
+      <div class="input-row"><label>Dropoff Time (4/13)</label><input type="text" value="12:00 pm" /></div>
+      <div class="input-row"><label>Set Live Date</label><input type="text" placeholder="MM/DD/YYYY" /></div>
+      <button class="btn-search">Search Menus</button>
+      <div class="cb-inline"><input type="checkbox" checked /> Active Delivery Date?</div>
+
+      <div id="menus-panel">
+        <div class="go-section" id="recurring-section">
+          <div class="go-section-hd recurring" onclick="toggleSection('recurring-body',this)">🔄 Recurring GO — Scheduled Menus <span class="collapse-arrow">▾</span></div>
+          <div class="go-section-body" id="recurring-body">
+            <div class="menu-legend" style="padding:8px 10px 0;">
+              <span><span class="dot dot-pink"></span>Non-active menus</span>
+              <span><span class="dot dot-yellow"></span>Over Client Budget</span>
+            </div>
+            <div style="padding:0 10px 10px;">
+              <div class="menu-counts" style="margin-top:6px;">
+                <div class="count-row"><span>Unique items scheduled:</span><span>52</span></div>
+                <div class="count-row"><span>Required min unique items:</span><span>7</span></div>
+              </div>
+              <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--muted);letter-spacing:0.4px;padding:4px 0 8px;">CLIENT BUDGET FOR ALL LOCATIONS — $0.00 per person, All-In</div>
+            </div>
+            <div class="restaurant-card">
+              <div class="rc-hd">
+                <div><div class="rc-name">Ben's Fast Food - SFO</div><div class="rc-meta">2 menus · 0 total orders</div></div>
+                <button class="btn-del">🗑 Delete All Menus</button>
+              </div>
+              <div class="menu-row">
+                <div>
+                  <div class="menu-row-name">Ranch Bowls w Photos - 5PM Day Before Cutoff</div>
+                  <div class="menu-row-meta">Order Count: 0 · Cutoff Time: Apr 12, 2026 5:00 PM EDT</div>
+                  <span class="badge-cutoff">After Cutoff</span>
+                </div>
+                <span class="price-tag">$18.00</span>
+              </div>
+            </div>
+            <div class="restaurant-card">
+              <div class="rc-hd">
+                <div><div class="rc-name">Erik's Deli Cafe</div><div class="rc-meta">1 menu · 0 total orders</div></div>
+                <button class="btn-del">🗑 Delete All Menus</button>
+              </div>
+              <div class="menu-row">
+                <div>
+                  <div class="menu-row-name">Erik's Deli Favorites - LOCKED (Cutoff Passed)</div>
+                  <div class="menu-row-meta">Order Count: 0 · Cutoff Time: Apr 12, 2026 5:00 PM EDT</div>
+                  <span class="badge-cutoff">After Cutoff</span>
+                </div>
+                <span class="price-tag">$19.38</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="go-section" id="adhoc-section" style="display:none;">
+          <div class="go-section-hd adhoc" onclick="toggleSection('adhoc-body',this)">⚡ Adhoc GO — Executive Team Lunch · Scheduled Menus <span class="collapse-arrow">▾</span></div>
+          <div class="go-section-body" id="adhoc-body">
+            <div style="padding:8px 10px 0;font-size:12px;color:var(--muted);">8 users · Fixed $22.00/person · Cutoff 5:00 PM day before · Dropoff 12:00 PM</div>
+            <div style="padding:0 10px 10px;margin-top:8px;">
+              <div class="restaurant-card adhoc-card">
+                <div class="rc-hd">
+                  <div><div class="rc-name">Sushi &amp; Sake</div><div class="rc-meta">1 menu · 8 orders</div></div>
+                  <button class="btn-del">🗑 Delete All Menus</button>
+                </div>
+                <div class="menu-row">
+                  <div>
+                    <div class="menu-row-name">Sushi &amp; Sake — Full Omakase Menu</div>
+                    <div class="menu-row-meta">Order Count: 8 · Cutoff Time: Apr 15, 2026 5:00 PM EDT</div>
+                  </div>
+                  <span class="price-tag">$22.00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODAL — v4 improvements on v2 visual style
+══════════════════════════════════════════════ -->
+<div class="overlay" id="modal">
+  <div class="modal">
+    <div class="modal-hd">
+      <div>
+        <div class="modal-hd-title">Add Adhoc Group Order</div>
+        <div class="modal-hd-sub">Group Order Demo - East · Standard Demo</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <div class="step-bar">
+      <div class="step-item active" id="st1"><div class="step-n">1</div>Configure</div>
+      <div class="step-item" id="st2"><div class="step-n">2</div>Pick Menus</div>
+      <div class="step-item" id="st3"><div class="step-n">3</div>Select Users</div>
+      <div class="step-item" id="st4"><div class="step-n">4</div>Review</div>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- ── STEP 1: CONFIGURE ── -->
+      <div id="s1">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">All fields required. This adhoc GO will appear alongside the scheduled recurring GO.</p>
+
+        <div class="form-grid">
+          <div class="fg">
+            <label>Name</label>
+            <input type="text" value="Executive Team Lunch" />
+          </div>
+          <div class="fg">
+            <label>Date</label>
+            <input type="date" value="2026-04-16" />
+          </div>
+          <div class="fg">
+            <label>Location</label>
+            <input type="text" value="Standard Demo" disabled />
+            <span class="hint">To change location, update the selected location on the main page.</span>
+          </div>
+          <div></div>
+        </div>
+
+        <!-- ✅ Subsidy inherited from location -->
+        <div class="subsidy-box">
+          <div class="sb-label">📍 Subsidy Inherited from Standard Demo</div>
+          <div class="sb-row">
+            <span><strong>Type:</strong> Fixed Amount</span>
+            <span><strong>Amount:</strong> $18.00 / person</span>
+            <span><strong>Restriction:</strong> Limit 1 per person</span>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="fg">
+            <label>Subsidy Amount ($) <span class="con-tag">Overrides location default</span></label>
+            <input type="number" value="22" />
+            <span class="hint">Subsidy type &amp; restrictions inherit from the location. Only the amount can be adjusted here.</span>
+          </div>
+          <div></div>
+        </div>
+
+        <div class="form-grid">
+          <div class="fg">
+            <label>Order Cutoff</label>
+            <input type="time" id="cutoff-inp" value="17:00" onchange="enforceCutoff(this)" />
+            <span class="hint warn" id="cutoff-hint">Defaults to 5:00 PM the day before. Cannot be later than 5:00 PM.</span>
+          </div>
+          <div class="fg">
+            <label>Dropoff Time</label>
+            <input type="time" id="dropoff-inp" value="12:00" onchange="enforceDropoff(this)" />
+          </div>
+        </div>
+
+        <div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:4px;padding:9px 12px;font-size:12px;color:#92400e;margin-top:4px;">
+          ℹ️ This adhoc GO will appear in users' accounts alongside the regular recurring GO for this location.
+        </div>
+      </div>
+
+      <!-- ── STEP 2: PICK MENUS (search-first) ── -->
+      <div id="s2" style="display:none">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Search for a menu to add to this adhoc GO. Search by vendor name or menu name.</p>
+
+        <!-- ⚙️ UGOM Override Panel -->
+        <div class="ugom-box" style="margin-bottom:14px;">
+          <div class="ugom-box-hd" onclick="toggleUgom()">
+            <div class="ugom-box-hd-left">
+              ⚙️ Menu Config — Override for this GO
+            </div>
+            <div class="ugom-box-hd-right">
+              <button class="btn-reset-ugom" onclick="event.stopPropagation();resetUgom()">↺ Reset to location defaults</button>
+              <span class="ugom-chevron" id="ugom-chevron">▾</span>
+            </div>
+          </div>
+          <div class="ugom-body" id="ugom-body">
+
+            <div class="ugom-inherited-note">
+              📍 Inherited from <strong>Standard Demo</strong>. Changes here apply only to this adhoc GO.
+            </div>
+
+            <div class="ugom-edit-checks">
+              <label class="ugom-cb-label">
+                <input type="checkbox" id="ugom-sides" checked onchange="ugomChanged()"> Enable Sides
+              </label>
+              <label class="ugom-cb-label">
+                <input type="checkbox" id="ugom-mods" checked onchange="ugomChanged()"> Enable Modifications
+              </label>
+            </div>
+
+            <div class="ugom-price-grid">
+              <div class="fg">
+                <label>Max Base Item Price ($)</label>
+                <input type="number" id="ugom-max-base" value="15" min="0" step="0.50" oninput="ugomChanged()" placeholder="No limit" />
+              </div>
+              <div class="fg">
+                <label>Max Mod Price ($)</label>
+                <input type="number" id="ugom-max-mod" value="" min="0" step="0.50" oninput="ugomChanged()" placeholder="No limit" />
+              </div>
+              <div class="fg">
+                <label>Max Total ($)</label>
+                <input type="number" id="ugom-max-total" value="" min="0" step="0.50" oninput="ugomChanged()" placeholder="No limit" />
+              </div>
+            </div>
+
+            <div class="fg" style="margin-bottom:12px;">
+              <label>Exclude Dietary Preferences</label>
+              <div class="ugom-excl-edit" id="ugom-excl-container" onclick="document.getElementById('ugom-excl-input').focus()">
+                <span class="ugom-excl-tag-edit" data-val="contains peanuts">contains peanuts <button class="excl-remove" onclick="removeExcl(this)">✕</button></span>
+                <input type="text" class="ugom-excl-input" id="ugom-excl-input" placeholder="Type &amp; press Enter to add…" onkeydown="handleExclInput(event)" />
+              </div>
+            </div>
+
+            <div class="ugom-blacklist-row-edit">
+              <div class="fg">
+                <label>Vendor Blacklist <span id="vendor-bl-count" style="background:var(--orange);color:white;border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">0</span></label>
+                <input type="text" id="vendor-bl-input" placeholder="Type vendor name &amp; press Enter…" onkeydown="handleBlacklistInput(event,'vendor')" />
+              </div>
+              <div class="fg">
+                <label>Menu Item Blacklist <span id="item-bl-count" style="background:var(--orange);color:white;border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;">0</span></label>
+                <input type="text" id="item-bl-input" placeholder="Type item name &amp; press Enter…" onkeydown="handleBlacklistInput(event,'item')" />
+              </div>
+            </div>
+
+            <div class="ugom-override-badge" id="ugom-override-badge" style="display:none;">
+              ✏️ Custom overrides applied to this GO — differs from location defaults.
+            </div>
+
+          </div>
+        </div>
+
+        <div class="menu-search-bar">
+          <input class="menu-search-input" type="text" id="menu-search-field"
+            placeholder="Search by vendor name or menu name…"
+            oninput="liveSearch(this.value)" />
+          <button class="btn-go" onclick="liveSearch(document.getElementById('menu-search-field').value)">Search</button>
+        </div>
+
+        <!-- Empty state — shown before any search -->
+        <div class="menu-empty-state" id="menu-empty">
+          <div class="ei">🔍</div>
+          <p>Type a vendor or menu name above to see available menus for <strong>Thursday, April 16</strong>.</p>
+        </div>
+
+        <!-- Dietary filters — always visible once user has typed -->
+        <div class="diet-filters" id="diet-filters" style="display:none;">
+          <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--muted);padding-top:4px;">Filter by:</span>
+          <button class="df-tag" onclick="toggleDiet(this,'vegan')">Vegan</button>
+          <button class="df-tag" onclick="toggleDiet(this,'gluten-free')">Gluten-Free</button>
+          <button class="df-tag" onclick="toggleDiet(this,'dairy-free')">Dairy-Free</button>
+          <button class="df-tag" onclick="toggleDiet(this,'keto')">Keto</button>
+          <button class="df-tag" onclick="toggleDiet(this,'nut-free')">Nut-Free</button>
+          <button class="df-tag" onclick="toggleDiet(this,'halal')">Halal</button>
+        </div>
+
+        <!-- Results — shown after search -->
+        <div id="menu-results" style="display:none;">
+          <div class="menu-table-wrap">
+            <table class="menu-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Chef</th>
+                  <th>Cuisines</th>
+                  <th>Has Mods</th>
+                  <th>Available Days</th>
+                  <th>Cutoff</th>
+                  <th>Earliest Pickup</th>
+                  <th>Max Items</th>
+                  <th>Item Count</th>
+                  <th>Min Payout</th>
+                  <th>Dietary Counts</th>
+                </tr>
+              </thead>
+              <tbody id="menu-list-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Selected menus summary -->
+        <div class="selected-menus-box" id="sel-menus-box" style="display:none;">
+          <h4>✓ Selected Menus (<span id="sel-menu-count">0</span>)</h4>
+          <div id="sel-menu-list"></div>
+        </div>
+      </div>
+
+      <!-- ── STEP 3: SELECT USERS ── -->
+      <div id="s3" style="display:none">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Add users enrolled at <strong>Standard Demo</strong>. Search one by one, or paste a list of emails for bulk validation.</p>
+
+        <!-- Mode toggle -->
+        <div class="user-mode-tabs">
+          <button class="umt active" id="tab-single" onclick="switchMode('single')">🔍 Search One by One</button>
+          <button class="umt" id="tab-bulk" onclick="switchMode('bulk')">📋 Paste Email List</button>
+        </div>
+
+        <!-- Single search mode -->
+        <div id="mode-single">
+          <div class="user-bar">
+            <input type="text" id="user-inp" placeholder="Search by name or email…" onkeydown="if(event.key==='Enter')searchUser()" />
+            <button class="btn-teal" onclick="searchUser()">Search</button>
+          </div>
+          <div class="user-error-box" id="u-error" style="display:none;">
+            ⚠️ <strong id="u-error-val"></strong> is not enrolled at Standard Demo. Users must be added to this location first.
+          </div>
+          <div class="user-found-box" id="u-found" style="display:none;">
+            <span>✓ <strong id="u-found-name"></strong> is enrolled at this location.</span>
+            <button class="btn-teal" onclick="addUser()" style="font-size:11px;padding:5px 11px;">+ Add to GO</button>
+          </div>
+        </div>
+
+        <!-- Bulk paste mode -->
+        <div id="mode-bulk" style="display:none;">
+          <div class="bulk-paste-area">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:5px;">Paste email addresses — one per line or comma-separated. The system will validate each against enrolled users at this location.</div>
+            <textarea id="bulk-inp" placeholder="sarah.chen@company.com&#10;mike.johnson@company.com&#10;alice.wang@company.com"></textarea>
+            <div class="bulk-actions">
+              <button class="btn-teal" onclick="runBulk()" style="font-size:12px;padding:7px 14px;">Validate Emails</button>
+              <button class="btn-ghost" onclick="clearBulk()" style="font-size:12px;padding:7px 14px;">Clear</button>
+            </div>
+          </div>
+          <div id="bulk-results" style="display:none;margin-top:10px;">
+            <div class="bulk-summary" id="bulk-summary-bar"></div>
+            <div id="bulk-result-list"></div>
+            <button class="btn-teal" id="bulk-add-btn" onclick="addAllFound()" style="margin-top:8px;font-size:12px;padding:7px 14px;display:none;"></button>
+          </div>
+        </div>
+
+        <!-- Added users (shared) -->
+        <div style="margin-top:14px;">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--muted);letter-spacing:0.5px;margin-bottom:6px;">Added (<span id="user-count">3</span>)</div>
+          <div class="chip-list" id="chip-list">
+            <div class="chip">sarah.chen@fortinet.com <button class="chip-x" onclick="removeChip(this)">✕</button></div>
+            <div class="chip">mike.johnson@fortinet.com <button class="chip-x" onclick="removeChip(this)">✕</button></div>
+            <div class="chip">priya.sharma@fortinet.com <button class="chip-x" onclick="removeChip(this)">✕</button></div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;background:var(--grey);border-radius:4px;padding:9px 12px;font-size:12px;color:var(--muted);">
+          ℹ️ Only users already enrolled at the selected location can be added. Missing users must be added to the location first via the Users tab.
+        </div>
+      </div>
+
+      <!-- ── STEP 4: REVIEW ── -->
+      <div id="s4" style="display:none">
+        <div id="review-body">
+
+          <div class="review-block">
+            <h4>Configuration</h4>
+            <div class="review-row"><span class="rl">Name</span><span>Executive Team Lunch</span></div>
+            <div class="review-row"><span class="rl">Date</span><span>Thursday, April 16, 2026</span></div>
+            <div class="review-row"><span class="rl">Location</span><span>Standard Demo</span></div>
+            <div class="review-row">
+              <span class="rl">Subsidy</span>
+              <span>Fixed — <strong>$22.00 / person</strong> · Limit 1 per person <span style="font-size:11px;color:var(--muted);">(type &amp; restrictions from location)</span></span>
+            </div>
+            <div class="review-row">
+              <span class="rl">Order Cutoff</span>
+              <span>Wed, April 15 at <strong>5:00 PM</strong></span>
+            </div>
+            <div class="review-row">
+              <span class="rl">Dropoff Time</span>
+              <span><strong>12:00 PM</strong></span>
+            </div>
+          </div>
+
+          <div class="review-block">
+            <h4>Menu Config (UGOM)</h4>
+            <div id="review-ugom">
+              <div class="review-row"><span class="rl">Enable Sides</span><span>✓ Yes</span></div>
+              <div class="review-row"><span class="rl">Enable Modifications</span><span>✓ Yes</span></div>
+              <div class="review-row"><span class="rl">Max Base Item Price</span><span id="rv-max-base">$15.00</span></div>
+              <div class="review-row"><span class="rl">Max Mod Price</span><span id="rv-max-mod" style="color:var(--muted);font-style:italic">No limit</span></div>
+              <div class="review-row"><span class="rl">Max Total</span><span id="rv-max-total" style="color:var(--muted);font-style:italic">No limit</span></div>
+              <div class="review-row"><span class="rl">Dietary Exclusions</span><span id="rv-excl">contains peanuts</span></div>
+              <div class="review-row" id="rv-override-row" style="display:none"><span class="rl" style="color:#92400e;">⚠ Overrides</span><span id="rv-override-note" style="color:#92400e;font-size:11.5px;">Custom settings applied — differs from location defaults.</span></div>
+            </div>
+          </div>
+
+          <div class="review-block">
+            <h4>Menus</h4>
+            <div class="review-row" id="review-menus">🍱 Sushi &amp; Sake — Tanaka Kitchen</div>
+          </div>
+
+          <div class="review-block">
+            <h4>Users (<span id="review-user-count">3</span>)</h4>
+            <div class="review-row" id="review-users" style="flex-wrap:wrap;gap:4px;">
+              <span style="background:#e6faf4;border:1px solid #a7f3d0;border-radius:12px;padding:2px 9px;font-size:12px;color:#065f46;">sarah.chen@fortinet.com</span>
+              <span style="background:#e6faf4;border:1px solid #a7f3d0;border-radius:12px;padding:2px 9px;font-size:12px;color:#065f46;">mike.johnson@fortinet.com</span>
+              <span style="background:#e6faf4;border:1px solid #a7f3d0;border-radius:12px;padding:2px 9px;font-size:12px;color:#065f46;">priya.sharma@fortinet.com</span>
+            </div>
+          </div>
+
+          <div class="notif-label">In-App Notification Preview</div>
+          <div class="notif-box"><strong>Fortinet</strong> is treating you to <strong>Executive Team Lunch</strong> — a special Group Order on <strong>Thursday, April 16 at 12:00 PM</strong>, delivered to <strong>Standard Demo</strong>. You have a <strong>$22.00</strong> credit to spend. Place your order by <strong>Wednesday, April 15 at 5:00 PM</strong>.</div>
+          <div class="warn-box">⚠️ Confirming will create this adhoc GO and send in-app notifications to 3 users. This cannot be undone automatically — contact support to cancel.</div>
+        </div>
+
+        <div class="success-wrap" id="success">
+          <div style="font-size:40px">✅</div>
+          <h3>Adhoc GO Created</h3>
+          <p>Executive Team Lunch — April 16<br>Notifications sent to 3 users.</p>
+          <br><button class="btn-primary" onclick="closeModal()">Done</button>
+        </div>
+      </div>
+
+    </div><!-- /modal-body -->
+
+    <div class="modal-foot" id="mfoot">
+      <button class="btn-ghost" id="bbk" onclick="prev()" style="visibility:hidden">← Back</button>
+      <span style="font-size:12px;color:var(--muted)" id="slbl">Step 1 of 4</span>
+      <button class="btn-primary" id="bnx" onclick="next()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──
+const knownUsers = [
+  'sarah.chen@fortinet.com','mike.johnson@fortinet.com','priya.sharma@fortinet.com',
+  'john.doe@fortinet.com','alice.wang@fortinet.com','bob.smith@fortinet.com',
+  'diana.lee@fortinet.com','raj.patel@fortinet.com','lisa.morgan@fortinet.com'
+];
+const allMenus = [
+  { id:'m1', name:'Sushi & Sake', chef:'Tanaka Kitchen', cuisines:['Japanese','Sushi'], hasMods:true, days:'MO, WE, FR', cutoff:'10:00 AM', pickup:'11:30 AM', maxItems:'N/A', itemCount:24, minPayout:'$150', dietary:['gluten-free (12)','dairy-free (8)','fish (6)','+1 more'] },
+  { id:'m2', name:'Mediterranean Grill', chef:'Chef Amara', cuisines:['Mediterranean','Healthy'], hasMods:true, days:'TU, WE, TH', cutoff:'9:00 AM', pickup:'11:00 AM', maxItems:'N/A', itemCount:18, minPayout:'$120', dietary:['vegan (10)','gluten-free (6)'] },
+  { id:'m3', name:'Taco Fiesta', chef:'La Cocina', cuisines:['Mexican','Street Food'], hasMods:false, days:'MO, WE', cutoff:'10:30 AM', pickup:'12:00 PM', maxItems:'N/A', itemCount:14, minPayout:'$90', dietary:['vegan (7)'] },
+  { id:'m4', name:'Green Bowl Co.', chef:'Fresh Roots', cuisines:['Salads','Bowls'], hasMods:true, days:'MO–TH', cutoff:'9:30 AM', pickup:'11:00 AM', maxItems:'N/A', itemCount:16, minPayout:'$100', dietary:['vegan (9)','gluten-free (9)','dairy-free (9)'] },
+  { id:'m5', name:'Soul Food Kitchen', chef:'Chef Marcus', cuisines:['American','Soul Food'], hasMods:true, days:'WE, TH, FR', cutoff:'11:00 AM', pickup:'12:00 PM', maxItems:'N/A', itemCount:20, minPayout:'$110', dietary:['dairy-free (5)'] },
+  { id:'m6', name:'Tanaka Premium Bento', chef:'Tanaka Kitchen', cuisines:['Japanese','Bento'], hasMods:true, days:'WE, FR', cutoff:'9:00 AM', pickup:'11:30 AM', maxItems:'N/A', itemCount:12, minPayout:'$130', dietary:['gluten-free (7)','+2 more'] },
+  { id:'m7', name:'Noodle House', chef:'Lucky Dragon', cuisines:['Chinese','Noodles'], hasMods:false, days:'TU, WE, TH', cutoff:'10:00 AM', pickup:'12:00 PM', maxItems:'N/A', itemCount:22, minPayout:'$95', dietary:[] },
+];
+
+const menuItems = {
+  m1: [
+    { name:'Salmon Sashimi Bowl',        type:'Main', hasMods:true,  altName:'N/A', vendorPrice:13.50, clientPrice:16.00, dietary:['gluten-free','dairy-free'] },
+    { name:'Spicy Tuna Roll',            type:'Main', hasMods:true,  altName:'N/A', vendorPrice:11.00, clientPrice:14.50, dietary:['gluten-free'] },
+    { name:'Peanut Sesame Noodles',      type:'Side', hasMods:false, altName:'N/A', vendorPrice:6.50,  clientPrice:8.00,  dietary:['contains peanuts','vegan'] },
+    { name:'Edamame',                    type:'Side', hasMods:false, altName:'N/A', vendorPrice:4.00,  clientPrice:5.50,  dietary:['vegan','gluten-free'] },
+    { name:'Wagyu Beef Don',             type:'Main', hasMods:true,  altName:'N/A', vendorPrice:18.00, clientPrice:22.00, dietary:[] },
+  ],
+  m2: [
+    { name:'Grilled Salmon Plate',       type:'Main', hasMods:true,  altName:'N/A', vendorPrice:12.50, clientPrice:16.00, dietary:['gluten-free'] },
+    { name:'Falafel Wrap',               type:'Main', hasMods:false, altName:'N/A', vendorPrice:9.00,  clientPrice:12.00, dietary:['vegan','gluten-free'] },
+    { name:'Hummus & Pita',              type:'Side', hasMods:false, altName:'N/A', vendorPrice:5.50,  clientPrice:7.50,  dietary:['vegan'] },
+    { name:'Peanut Tahini Salad',        type:'Side', hasMods:false, altName:'N/A', vendorPrice:7.00,  clientPrice:9.00,  dietary:['contains peanuts','vegan'] },
+    { name:'Lamb Kebab Plate',           type:'Main', hasMods:true,  altName:'N/A', vendorPrice:14.00, clientPrice:18.00, dietary:['gluten-free'] },
+  ],
+  m3: [
+    { name:'Chicken Street Taco',        type:'Main', hasMods:false, altName:'N/A', vendorPrice:10.00, clientPrice:13.00, dietary:['gluten-free'] },
+    { name:'Veggie Burrito Bowl',        type:'Main', hasMods:false, altName:'N/A', vendorPrice:9.00,  clientPrice:12.00, dietary:['vegan','gluten-free'] },
+    { name:'Peanut Salsa Verde',         type:'Side', hasMods:false, altName:'N/A', vendorPrice:3.50,  clientPrice:4.50,  dietary:['contains peanuts','vegan'] },
+    { name:'Chips & Guacamole',          type:'Side', hasMods:false, altName:'N/A', vendorPrice:4.00,  clientPrice:5.00,  dietary:['vegan','gluten-free'] },
+  ],
+  m4: [
+    { name:'Roasted Veggie Bowl',        type:'Main', hasMods:true,  altName:'N/A', vendorPrice:10.00, clientPrice:13.50, dietary:['vegan','gluten-free','dairy-free'] },
+    { name:'Quinoa Power Bowl',          type:'Main', hasMods:true,  altName:'N/A', vendorPrice:11.00, clientPrice:14.00, dietary:['vegan','gluten-free'] },
+    { name:'Grain & Greens',             type:'Main', hasMods:false, altName:'N/A', vendorPrice:9.50,  clientPrice:12.50, dietary:['vegan','gluten-free','dairy-free'] },
+    { name:'Sesame Peanut Dressing Cup', type:'Side', hasMods:false, altName:'N/A', vendorPrice:2.50,  clientPrice:3.50,  dietary:['contains peanuts','vegan'] },
+    { name:'Green Goddess Dressing',     type:'Side', hasMods:false, altName:'N/A', vendorPrice:2.00,  clientPrice:3.00,  dietary:['vegan','gluten-free','dairy-free'] },
+  ],
+  m5: [
+    { name:'BBQ Pulled Chicken Plate',   type:'Main', hasMods:true,  altName:'N/A', vendorPrice:12.00, clientPrice:15.50, dietary:['dairy-free','gluten-free'] },
+    { name:'Mac & Cheese',               type:'Side', hasMods:false, altName:'N/A', vendorPrice:5.00,  clientPrice:6.50,  dietary:[] },
+    { name:'Collard Greens',             type:'Side', hasMods:false, altName:'N/A', vendorPrice:4.00,  clientPrice:5.50,  dietary:['dairy-free'] },
+    { name:'Cornbread',                  type:'Side', hasMods:false, altName:'N/A', vendorPrice:3.00,  clientPrice:4.00,  dietary:[] },
+    { name:'Smothered Pork Chops',       type:'Main', hasMods:false, altName:'N/A', vendorPrice:13.00, clientPrice:17.00, dietary:['dairy-free'] },
+  ],
+  m6: [
+    { name:'Salmon Teriyaki Bento',      type:'Main', hasMods:true,  altName:'N/A', vendorPrice:14.00, clientPrice:18.00, dietary:['gluten-free','dairy-free'] },
+    { name:'Chicken Katsu Bento',        type:'Main', hasMods:true,  altName:'N/A', vendorPrice:12.00, clientPrice:15.50, dietary:[] },
+    { name:'Peanut Noodle Add-on',       type:'Side', hasMods:false, altName:'N/A', vendorPrice:5.00,  clientPrice:6.50,  dietary:['contains peanuts'] },
+    { name:'Miso Soup',                  type:'Side', hasMods:false, altName:'N/A', vendorPrice:2.50,  clientPrice:3.50,  dietary:['gluten-free','dairy-free'] },
+    { name:'Dragon Roll',                type:'Main', hasMods:false, altName:'N/A', vendorPrice:16.00, clientPrice:20.00, dietary:['gluten-free'] },
+  ],
+  m7: [
+    { name:'Beef Chow Mein',             type:'Main', hasMods:false, altName:'N/A', vendorPrice:10.00, clientPrice:13.00, dietary:[] },
+    { name:'Veggie Lo Mein',             type:'Main', hasMods:false, altName:'N/A', vendorPrice:8.50,  clientPrice:11.50, dietary:['vegan'] },
+    { name:'Dan Dan Noodles',            type:'Main', hasMods:false, altName:'N/A', vendorPrice:9.00,  clientPrice:12.00, dietary:['contains peanuts'] },
+    { name:'Spring Rolls (2pc)',         type:'Side', hasMods:false, altName:'N/A', vendorPrice:4.50,  clientPrice:6.00,  dietary:['vegan'] },
+    { name:'Hot & Sour Soup',            type:'Side', hasMods:false, altName:'N/A', vendorPrice:4.00,  clientPrice:5.50,  dietary:['dairy-free'] },
+  ],
+};
+
+let step = 1;
+let selectedMenus = {};
+let addedUsers = ['sarah.chen@fortinet.com','mike.johnson@fortinet.com','priya.sharma@fortinet.com'];
+let bulkFound = [];
+let activeDietFilters = new Set();
+let lastQuery = '';
+
+// ── MODAL ──
+function openModal() { document.getElementById('modal').classList.add('open'); document.body.style.overflow='hidden'; show(1); }
+function closeModal() { document.getElementById('modal').classList.remove('open'); document.body.style.overflow=''; }
+document.getElementById('modal').addEventListener('click', e => { if (e.target===document.getElementById('modal')) closeModal(); });
+
+function show(n) {
+  step = n;
+  [1,2,3,4].forEach(i => {
+    document.getElementById('s'+i).style.display = i===n ? '' : 'none';
+    const t = document.getElementById('st'+i);
+    t.classList.remove('active','done');
+    if (i < n) t.classList.add('done');
+    if (i === n) t.classList.add('active');
+  });
+  document.getElementById('slbl').textContent = 'Step '+n+' of 4';
+  document.getElementById('bbk').style.visibility = n > 1 ? 'visible' : 'hidden';
+  const nb = document.getElementById('bnx');
+  nb.textContent = n === 4 ? 'Confirm & Create' : 'Next →';
+  nb.className = n === 4 ? 'btn-confirm' : 'btn-primary';
+  if (n === 4) ugomChanged(); // sync UGOM review state
+}
+function next() {
+  if (step < 4) { show(step+1); }
+  else {
+    document.getElementById('review-body').style.display='none';
+    document.getElementById('success').style.display='block';
+    document.getElementById('mfoot').style.display='none';
+  }
+}
+function prev() { if (step > 1) show(step-1); }
+
+// ── CUTOFF / DROPOFF ENFORCEMENT ──
+function enforceCutoff(input) {
+  if (input.value > '17:00') {
+    input.value = '17:00';
+    const h = document.getElementById('cutoff-hint');
+    h.textContent = '⚠️ Cannot be later than 5:00 PM. Reset to 5:00 PM.';
+    h.style.color = '#c0392b';
+    setTimeout(() => { h.textContent='Defaults to 5:00 PM the day before. Cannot be later than 5:00 PM.'; h.style.color=''; }, 2500);
+  }
+}
+function enforceDropoff(input) {
+  if (input.value < '12:00') {
+    input.value = '12:00';
+    const h = document.getElementById('dropoff-hint');
+    h.textContent = '⚠️ Cannot be earlier than 12:00 PM. Reset to 12:00 PM.';
+    h.style.color = '#c0392b';
+    setTimeout(() => { h.textContent='Defaults to 12:00 PM. Can only be adjusted later.'; h.style.color=''; }, 2500);
+  }
+}
+
+// ── UGOM OVERRIDE LOGIC ──
+const ugomDefaults = {
+  sides: true, mods: true,
+  maxBase: '15', maxMod: '', maxTotal: '',
+  excl: ['contains peanuts'],
+  vendorBl: [], itemBl: []
+};
+let ugomState = {
+  excl: [...ugomDefaults.excl],
+  vendorBl: [], itemBl: []
+};
+
+function toggleUgom() {
+  const body = document.getElementById('ugom-body');
+  const chev = document.getElementById('ugom-chevron');
+  body.classList.toggle('open');
+  chev.classList.toggle('open');
+}
+
+function ugomChanged() {
+  const sides   = document.getElementById('ugom-sides').checked;
+  const mods    = document.getElementById('ugom-mods').checked;
+  const maxBase = document.getElementById('ugom-max-base').value;
+  const maxMod  = document.getElementById('ugom-max-mod').value;
+  const maxTotal= document.getElementById('ugom-max-total').value;
+  const exclSame = JSON.stringify(ugomState.excl.slice().sort()) === JSON.stringify(ugomDefaults.excl.slice().sort());
+
+  const isOverridden = sides !== ugomDefaults.sides
+    || mods !== ugomDefaults.mods
+    || maxBase !== ugomDefaults.maxBase
+    || maxMod !== ugomDefaults.maxMod
+    || maxTotal !== ugomDefaults.maxTotal
+    || !exclSame
+    || ugomState.vendorBl.length > 0
+    || ugomState.itemBl.length > 0;
+
+  document.getElementById('ugom-override-badge').style.display = isOverridden ? 'block' : 'none';
+
+  // sync review step
+  document.getElementById('rv-max-base').textContent = maxBase ? '$' + parseFloat(maxBase).toFixed(2) : 'No limit';
+  document.getElementById('rv-max-mod').textContent  = maxMod  ? '$' + parseFloat(maxMod).toFixed(2)  : 'No limit';
+  document.getElementById('rv-max-total').textContent= maxTotal? '$' + parseFloat(maxTotal).toFixed(2): 'No limit';
+  if (isOverridden) {
+    document.getElementById('rv-override-row').style.display = '';
+  } else {
+    document.getElementById('rv-override-row').style.display = 'none';
+  }
+  refreshOpenPreviews();
+}
+
+function resetUgom() {
+  document.getElementById('ugom-sides').checked = ugomDefaults.sides;
+  document.getElementById('ugom-mods').checked  = ugomDefaults.mods;
+  document.getElementById('ugom-max-base').value = ugomDefaults.maxBase;
+  document.getElementById('ugom-max-mod').value  = ugomDefaults.maxMod;
+  document.getElementById('ugom-max-total').value= ugomDefaults.maxTotal;
+
+  // reset exclusions
+  ugomState.excl = [...ugomDefaults.excl];
+  renderExclTags();
+
+  // reset blacklists
+  ugomState.vendorBl = [];
+  ugomState.itemBl   = [];
+  document.getElementById('vendor-bl-count').textContent = '0';
+  document.getElementById('item-bl-count').textContent   = '0';
+  document.getElementById('vendor-bl-input').value = '';
+  document.getElementById('item-bl-input').value   = '';
+
+  ugomChanged();
+}
+
+function renderExclTags() {
+  const container = document.getElementById('ugom-excl-container');
+  const input = document.getElementById('ugom-excl-input');
+  // clear existing tags
+  Array.from(container.querySelectorAll('.ugom-excl-tag-edit')).forEach(el => el.remove());
+  // re-render
+  ugomState.excl.forEach(val => {
+    const span = document.createElement('span');
+    span.className = 'ugom-excl-tag-edit';
+    span.dataset.val = val;
+    span.innerHTML = val + ' <button class="excl-remove" onclick="removeExcl(this)">✕</button>';
+    container.insertBefore(span, input);
+  });
+  syncExclReview();
+}
+
+function removeExcl(btn) {
+  const tag = btn.closest('.ugom-excl-tag-edit');
+  const val = tag.dataset.val;
+  ugomState.excl = ugomState.excl.filter(v => v !== val);
+  tag.remove();
+  syncExclReview();
+  ugomChanged();
+}
+
+function handleExclInput(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const input = document.getElementById('ugom-excl-input');
+    const val = input.value.trim();
+    if (val && !ugomState.excl.includes(val)) {
+      ugomState.excl.push(val);
+      const container = document.getElementById('ugom-excl-container');
+      const span = document.createElement('span');
+      span.className = 'ugom-excl-tag-edit';
+      span.dataset.val = val;
+      span.innerHTML = val + ' <button class="excl-remove" onclick="removeExcl(this)">✕</button>';
+      container.insertBefore(span, input);
+      input.value = '';
+      syncExclReview();
+      ugomChanged();
+    }
+  }
+}
+
+function syncExclReview() {
+  const el = document.getElementById('rv-excl');
+  if (el) el.textContent = ugomState.excl.length ? ugomState.excl.join(', ') : 'None';
+}
+
+function handleBlacklistInput(e, type) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const inputId = type === 'vendor' ? 'vendor-bl-input' : 'item-bl-input';
+    const countId = type === 'vendor' ? 'vendor-bl-count' : 'item-bl-count';
+    const arr     = type === 'vendor' ? ugomState.vendorBl : ugomState.itemBl;
+    const input   = document.getElementById(inputId);
+    const val     = input.value.trim();
+    if (val && !arr.includes(val)) {
+      arr.push(val);
+      document.getElementById(countId).textContent = arr.length;
+      input.value = '';
+      ugomChanged();
+    }
+  }
+}
+
+// ── MENU SEARCH ──
+
+// ── MENU ITEM PREVIEW ──
+function toggleMenuPreview(menuId) {
+  const row  = document.getElementById('prev-' + menuId);
+  const chev = document.getElementById('chev-' + menuId);
+  const open = row.style.display !== 'none';
+  if (open) {
+    row.style.display = 'none';
+    chev.textContent = '▸';
+  } else {
+    row.style.display = '';
+    chev.textContent = '▾';
+    document.getElementById('prevwrap-' + menuId).innerHTML = buildMenuPreview(menuId);
+  }
+}
+
+function buildMenuPreview(menuId) {
+  const items  = menuItems[menuId] || [];
+  const maxBase = parseFloat(document.getElementById('ugom-max-base').value);
+  const excl   = ugomState.excl.map(e => e.toLowerCase());
+  const itemBl = ugomState.itemBl.map(e => e.toLowerCase());
+
+  let allowedCount = 0;
+  const rows = items.map(item => {
+    const reasons = [];
+    if (!isNaN(maxBase) && item.vendorPrice > maxBase)
+      reasons.push('Over max base price ($' + maxBase.toFixed(2) + ')');
+    excl.forEach(e => {
+      if (item.dietary.some(d => d.toLowerCase().includes(e)))
+        reasons.push('Dietary: ' + item.dietary.find(d => d.toLowerCase().includes(e)));
+    });
+    itemBl.forEach(b => {
+      if (item.name.toLowerCase().includes(b)) reasons.push('Item blacklisted');
+    });
+
+    const filtered = reasons.length > 0;
+    if (!filtered) allowedCount++;
+    const margin   = (((item.clientPrice - item.vendorPrice) / item.clientPrice) * 100).toFixed(1);
+    const dietHtml = item.dietary.length
+      ? item.dietary.map(d => `<span class="diet-pill">${d}</span>`).join(' ')
+      : '<span style="color:#ccc">—</span>';
+    return `<tr class="${filtered ? 'item-filtered' : 'item-ok'}">
+      <td><span class="${filtered ? 'item-name-filtered' : 'item-name-ok'}">${item.name}</span></td>
+      <td>${item.type}</td>
+      <td>${item.hasMods ? 'Yes' : 'No'}</td>
+      <td>${item.altName || 'N/A'}</td>
+      <td>${dietHtml}</td>
+      <td>$${item.vendorPrice.toFixed(2)}</td>
+      <td>$${item.clientPrice.toFixed(2)}</td>
+      <td>${margin}%</td>
+    </tr>`;
+  });
+
+  const filteredCount = items.length - allowedCount;
+  const summaryStyle = filteredCount > 0
+    ? 'background:#fffbeb;color:#92400e;'
+    : 'background:#ecfdf5;color:#065f46;';
+  const summaryMsg = filteredCount > 0
+    ? `<span class="ph-allowed">${allowedCount} of ${items.length} items visible to diners</span> · <span class="ph-filtered">${filteredCount} hidden by menu config</span>`
+    : `<span class="ph-allowed">All ${items.length} items visible to diners</span>`;
+
+  return `<div class="preview-header" style="${summaryStyle}">${summaryMsg}</div>
+  <div style="overflow-x:auto;">
+    <table class="item-table">
+      <thead><tr>
+        <th>Item Name</th><th>Meal Type</th><th>Has Mods</th><th>Alt Name</th>
+        <th>Dietary Tags</th><th>Vendor Price</th><th>Client Price</th><th>Food Margin</th>
+      </tr></thead>
+      <tbody>${rows.join('')}</tbody>
+    </table>
+  </div>`;
+}
+
+function refreshOpenPreviews() {
+  allMenus.forEach(m => {
+    const row = document.getElementById('prev-' + m.id);
+    if (row && row.style.display !== 'none') {
+      document.getElementById('prevwrap-' + m.id).innerHTML = buildMenuPreview(m.id);
+    }
+  });
+}
+
+function toggleDiet(btn, tag) {
+  btn.classList.toggle('active');
+  if (activeDietFilters.has(tag)) activeDietFilters.delete(tag);
+  else activeDietFilters.add(tag);
+  if (lastQuery) liveSearch(lastQuery);
+}
+
+function liveSearch(q) {
+  lastQuery = q;
+  if (!q || !q.trim()) {
+    document.getElementById('menu-empty').style.display='';
+    document.getElementById('menu-results').style.display='none';
+    document.getElementById('diet-filters').style.display='none';
+    return;
+  }
+  document.getElementById('diet-filters').style.display='flex';
+  const lower = q.toLowerCase();
+  let filtered = allMenus.filter(m =>
+    m.name.toLowerCase().includes(lower) ||
+    m.chef.toLowerCase().includes(lower) ||
+    m.cuisines.some(c => c.toLowerCase().includes(lower))
+  );
+  // Apply active dietary filters
+  if (activeDietFilters.size > 0) {
+    filtered = filtered.filter(m =>
+      [...activeDietFilters].every(f => m.dietary.some(d => d.toLowerCase().includes(f)))
+    );
+  }
+  document.getElementById('menu-empty').style.display='none';
+  document.getElementById('menu-results').style.display='';
+  const body = document.getElementById('menu-list-body');
+  if (!filtered.length) {
+    body.innerHTML=`<tr><td colspan="11" style="text-align:center;padding:24px;color:#aaa;font-size:13px;">No menus found matching "${q}"</td></tr>`;
+    return;
+  }
+  body.innerHTML = filtered.map(m => {
+    const isSel = !!selectedMenus[m.id];
+    const cuisineTags = m.cuisines.map(c=>`<span class="cui-tag">${c}</span>`).join('');
+    const dietPills = m.dietary.length
+      ? m.dietary.map(d=>`<span class="diet-pill">${d}</span>`).join('')
+      : '<span style="color:#ccc;font-size:11px;">—</span>';
+    const modIcon = m.hasMods
+      ? `<span class="mods-yes">✓</span>`
+      : `<span class="mods-no">✕</span>`;
+    return `<tr class="${isSel?'sel-row':''}" id="mrow-${m.id}">
+      <td><div class="mn">
+        <span class="chevron-preview" id="chev-${m.id}" onclick="toggleMenuPreview('${m.id}')" title="Preview menu items">▸</span>
+        ${m.name}
+        <button class="btn-add-pill ${isSel?'added':''}" onclick="toggleMenu('${m.id}','${m.name.replace(/'/g,"\\'")}','${m.chef.replace(/'/g,"\\'")}',this)">
+          ${isSel?'− Remove':'+ Add'}
+        </button>
+      </div></td>
+      <td>${m.chef}</td>
+      <td>${cuisineTags}</td>
+      <td style="text-align:center">${modIcon}</td>
+      <td>${m.days}</td>
+      <td>${m.cutoff}</td>
+      <td>${m.pickup}</td>
+      <td>${m.maxItems}</td>
+      <td>${m.itemCount}</td>
+      <td>${m.minPayout}</td>
+      <td>${dietPills}</td>
+    </tr>
+    <tr class="menu-preview-row" id="prev-${m.id}" style="display:none;">
+      <td colspan="11"><div id="prevwrap-${m.id}"></div></td>
+    </tr>`;
+  }).join('');
+  // auto-expand item preview for every result
+  filtered.forEach(m => {
+    const row  = document.getElementById('prev-' + m.id);
+    const chev = document.getElementById('chev-' + m.id);
+    if (row) {
+      row.style.display = '';
+      chev.textContent  = '▾';
+      document.getElementById('prevwrap-' + m.id).innerHTML = buildMenuPreview(m.id);
+    }
+  });
+  updateSelBox();
+}
+
+function toggleSection(bodyId, hd) {
+  const body = document.getElementById(bodyId);
+  const arrow = hd.querySelector('.collapse-arrow');
+  if (body.classList.contains('collapsed')) {
+    body.classList.remove('collapsed');
+    hd.classList.remove('collapsed');
+    if (arrow) arrow.style.transform='';
+  } else {
+    body.classList.add('collapsed');
+    hd.classList.add('collapsed');
+    if (arrow) arrow.style.transform='rotate(-90deg)';
+  }
+}
+
+function toggleMenu(id, name, chef, btn) {
+  const row = document.getElementById('mrow-'+id);
+  const isSel = !!selectedMenus[id];
+  if (isSel) {
+    delete selectedMenus[id];
+    if (row) row.classList.remove('sel-row');
+    btn.textContent = '+ Add';
+    btn.classList.remove('added');
+  } else {
+    selectedMenus[id] = {name, chef};
+    if (row) row.classList.add('sel-row');
+    btn.textContent = '− Remove';
+    btn.classList.add('added');
+  }
+  updateSelBox();
+}
+
+function updateSelBox() {
+  const keys = Object.keys(selectedMenus);
+  const box = document.getElementById('sel-menus-box');
+  box.style.display = keys.length ? '' : 'none';
+  document.getElementById('sel-menu-count').textContent = keys.length;
+  document.getElementById('sel-menu-list').innerHTML = keys.map(id =>
+    `<div class="sel-menu-item"><span>🍱 ${selectedMenus[id].name} — ${selectedMenus[id].chef}</span><button class="rm-btn" onclick="removeMenu('${id}')">✕ Remove</button></div>`
+  ).join('');
+}
+
+function removeMenu(id) {
+  const row = document.getElementById('mrow-'+id);
+  if (row) {
+    row.classList.remove('sel-row');
+    const btn = row.querySelector('.btn-add-pill');
+    if (btn) { btn.textContent='+ Add'; btn.classList.remove('added'); }
+  }
+  delete selectedMenus[id];
+  updateSelBox();
+}
+
+// ── USER SEARCH ──
+function switchMode(m) {
+  document.getElementById('mode-single').style.display = m==='single' ? '' : 'none';
+  document.getElementById('mode-bulk').style.display = m==='bulk' ? '' : 'none';
+  document.getElementById('tab-single').classList.toggle('active', m==='single');
+  document.getElementById('tab-bulk').classList.toggle('active', m==='bulk');
+}
+
+function searchUser() {
+  const v = document.getElementById('user-inp').value.trim();
+  if (!v) return;
+  const found = knownUsers.find(u => u.toLowerCase().includes(v.toLowerCase()));
+  document.getElementById('u-error').style.display='none';
+  document.getElementById('u-found').style.display='none';
+  if (found) { document.getElementById('u-found-name').textContent=found; document.getElementById('u-found').style.display='flex'; }
+  else { document.getElementById('u-error-val').textContent=v; document.getElementById('u-error').style.display='block'; }
+}
+
+function addUser() {
+  const name = document.getElementById('u-found-name').textContent;
+  if (!addedUsers.includes(name)) {
+    addedUsers.push(name);
+    const cl = document.getElementById('chip-list');
+    const d = document.createElement('div'); d.className='chip';
+    d.innerHTML = name + ' <button class="chip-x" onclick="removeChip(this)">✕</button>';
+    cl.appendChild(d);
+    document.getElementById('user-count').textContent = addedUsers.length;
+  }
+  document.getElementById('u-found').style.display='none';
+  document.getElementById('user-inp').value='';
+}
+
+// ── BULK PASTE ──
+function runBulk() {
+  const raw = document.getElementById('bulk-inp').value.trim();
+  if (!raw) return;
+  const emails = raw.split(/[\n,]+/).map(e=>e.trim().toLowerCase()).filter(Boolean);
+  bulkFound = [];
+  let fc=0, nfc=0;
+  const items = emails.map(email => {
+    const isKnown = knownUsers.some(u=>u.toLowerCase()===email);
+    const already = addedUsers.some(u=>u.toLowerCase()===email);
+    if (isKnown) { fc++; if (!already) bulkFound.push(email); return `<div class="bulk-result-item found"><span>${email}</span><span class="rs">${already?'✓ Already added':'✓ Verified'}</span></div>`; }
+    else { nfc++; return `<div class="bulk-result-item not-found"><span>${email}</span><span class="rs">✕ Not enrolled</span></div>`; }
+  }).join('');
+  document.getElementById('bulk-summary-bar').innerHTML=`<span>Checked <strong>${emails.length}</strong></span><span class="fc">✓ ${fc} verified</span><span class="nfc">✕ ${nfc} not found</span>`;
+  document.getElementById('bulk-result-list').innerHTML=items;
+  const ab=document.getElementById('bulk-add-btn');
+  if (bulkFound.length) { ab.textContent=`+ Add ${bulkFound.length} Verified User${bulkFound.length!==1?'s':''} to GO`; ab.style.display=''; }
+  else { ab.style.display='none'; }
+  document.getElementById('bulk-results').style.display='';
+}
+
+function addAllFound() {
+  bulkFound.forEach(email => {
+    if (!addedUsers.includes(email)) {
+      addedUsers.push(email);
+      const cl = document.getElementById('chip-list');
+      const d = document.createElement('div'); d.className='chip';
+      d.innerHTML = email + ' <button class="chip-x" onclick="removeChip(this)">✕</button>';
+      cl.appendChild(d);
+    }
+  });
+  document.getElementById('user-count').textContent=addedUsers.length;
+  const ab=document.getElementById('bulk-add-btn');
+  ab.textContent='✓ Added!';
+  bulkFound=[];
+  setTimeout(()=>{ ab.style.display='none'; document.getElementById('bulk-results').style.display='none'; document.getElementById('bulk-inp').value=''; },1500);
+}
+
+function clearBulk() {
+  document.getElementById('bulk-inp').value='';
+  document.getElementById('bulk-results').style.display='none';
+  bulkFound=[];
+}
+
+function removeChip(btn) {
+  const chip = btn.closest('.chip');
+  const email = chip.textContent.replace('✕','').trim();
+  addedUsers = addedUsers.filter(u=>u!==email);
+  chip.remove();
+  document.getElementById('user-count').textContent=addedUsers.length;
+}
+
+// ── CALENDAR ──
+function selDay(el, label, hasGo, hasAdhoc) {
+  document.querySelectorAll('.cc').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('day-label').innerHTML='Edit menus &amp; view orders for <strong>'+label+', 2026</strong>';
+  document.getElementById('recurring-section').style.display=hasGo?'':'none';
+  document.getElementById('adhoc-section').style.display=hasAdhoc?'':'none';
+  document.getElementById('menus-panel').style.opacity=(!hasGo&&!hasAdhoc)?'0.4':'1';
+}
+</script>
+</body>
+</html>
