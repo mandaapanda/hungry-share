@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Group Order Relationships — HUNGRY</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --blue:      #3d4b53;
+      --orange:    #fe5f52;
+      --magenta:   #ee356c;
+      --grey:      #f4f4f4;
+      --white:     #ffffff;
+      --gradient:  linear-gradient(135deg, #fe5f52, #ee356c);
+      --border:    #e5e7eb;
+      --text:      #3d4b53;
+      --muted:     #6b7280;
+      --font:      'Poppins', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background: var(--grey);
+      color: var(--text);
+      padding: 40px 32px 60px;
+      font-size: 13px;
+    }
+
+    /* ── Header ── */
+    .page-header {
+      margin-bottom: 36px;
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: var(--gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-icon svg { width: 18px; height: 18px; fill: white; }
+
+    .logo-wordmark {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--blue);
+      letter-spacing: 0.04em;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--blue);
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .gradient-bar {
+      width: 48px;
+      height: 3px;
+      background: var(--gradient);
+      border-radius: 2px;
+      margin: 8px 0 10px;
+    }
+
+    .subtitle {
+      font-size: 13.5px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    /* ── Sections ── */
+    section {
+      background: var(--white);
+      border-radius: 8px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      border: 1px solid var(--border);
+    }
+
+    .sec-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    /* ── ER Diagram ── */
+    .mermaid {
+      display: flex;
+      justify-content: center;
+    }
+
+    /* ── GO Type Cards ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .card {
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-header.recurring  { background: var(--blue); }
+    .card-header.adhoc      { background: var(--gradient); }
+    .card-header.substitute { background: var(--magenta); }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 3px;
+    }
+
+    .card-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 99px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      letter-spacing: 0.03em;
+    }
+
+    .card-body {
+      padding: 14px 16px;
+      background: var(--white);
+    }
+
+    .card ul {
+      list-style: none;
+      font-size: 12.5px;
+      line-height: 1.85;
+      color: #444;
+    }
+
+    .card ul li {
+      display: flex;
+      gap: 7px;
+    }
+
+    .card ul li::before {
+      content: "–";
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    /* ── Date Coexistence ── */
+    .scenarios {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .scenario-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--blue);
+      margin-bottom: 10px;
+    }
+
+    .date-box {
+      background: var(--grey);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px 18px;
+    }
+
+    .date-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--blue);
+      margin-bottom: 2px;
+    }
+
+    .location-label {
+      font-size: 11.5px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .go-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 5px;
+      margin: 4px 0;
+      font-size: 12.5px;
+    }
+
+    .go-row.recurring  { background: rgba(61,75,83,0.08);  border-left: 3px solid var(--blue); }
+    .go-row.adhoc      { background: rgba(254,95,82,0.08); border-left: 3px solid var(--orange); }
+    .go-row.substitute { background: rgba(238,53,108,0.08); border-left: 3px solid var(--magenta); }
+    .go-row.cancelled  { background: #f3f4f6; border-left: 3px solid #d1d5db; opacity: 0.55; }
+
+    .go-type-pill {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 2px 7px;
+      border-radius: 99px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+      color: white;
+    }
+    .go-row.recurring  .go-type-pill { background: var(--blue); }
+    .go-row.adhoc      .go-type-pill { background: var(--gradient); }
+    .go-row.substitute .go-type-pill { background: var(--magenta); }
+    .go-row.cancelled  .go-type-pill { background: #9ca3af; }
+
+    .go-name  { font-weight: 600; color: var(--text); flex: 1; }
+    .go-scope { font-size: 11px; color: var(--muted); }
+    .go-name.struck { text-decoration: line-through; color: var(--muted); }
+
+    /* ── Table ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th {
+      background: var(--blue);
+      color: white;
+      text-align: left;
+      padding: 10px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    th:first-child { border-radius: 4px 0 0 0; }
+    th:last-child  { border-radius: 0 4px 0 0; }
+
+    td {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      color: #444;
+    }
+
+    tr:nth-child(even) td { background: var(--grey); }
+    tr:last-child td { border-bottom: none; }
+
+    .row-label { font-weight: 600; color: var(--blue); }
+
+    .col-recurring  { color: var(--blue);    font-weight: 500; }
+    .col-adhoc      { color: var(--orange);  font-weight: 500; }
+    .col-substitute { color: var(--magenta); font-weight: 500; }
+    .tbd            { color: #aaa; font-style: italic; }
+
+    /* ── Key Rule Callout ── */
+    .callout {
+      border-left: 3px solid var(--orange);
+      background: #fff7f6;
+      border-radius: 0 6px 6px 0;
+      padding: 13px 16px;
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.65;
+      margin-top: 20px;
+    }
+
+    .callout strong { color: var(--orange); }
+  </style>
+</head>
+<body>
+
+  <!-- ── Page Header ── -->
+  <div class="page-header">
+    <div class="logo-row">
+      <div class="logo-icon">
+        <!-- Cutting board icon -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+        </svg>
+      </div>
+      <span class="logo-wordmark">HUNGRY</span>
+    </div>
+    <h1>Group Order Relationships</h1>
+    <div class="gradient-bar"></div>
+    <p class="subtitle">How recurring, adhoc, and substitute GOs relate after the adhoc GO feature is introduced.</p>
+  </div>
+
+  <!-- ── ER Diagram ── -->
+  <section>
+    <div class="sec-label">Entity Relationship Diagram</div>
+    <div class="mermaid">
+erDiagram
+    CLIENT ||--o{ LOCATION : "has"
+    LOCATION ||--o{ SCHEDULE : "governs delivery via"
+    LOCATION ||--o{ GROUP_ORDER : "has"
+    SCHEDULE ||--o{ SCHEDULE_RULE : "has"
+    SCHEDULE ||--o{ SCHEDULE_OVERRIDE : "has"
+    SCHEDULE ||--o{ GROUP_ORDER : "auto-generates (recurring)"
+
+    GROUP_ORDER {
+        string id
+        enum goType "recurring | adhoc | substitute"
+        date date
+        string locationId
+        json subsidy
+        int orderCutoff
+        int dropoffTime
+    }
+
+    GROUP_ORDER ||--o{ MENU : "has"
+    GROUP_ORDER ||--|| UGOM_CONFIG : "has"
+    GROUP_ORDER ||--o{ USER_ORDER : "has"
+
+    RECURRING_GO }o--|| GROUP_ORDER : "extends"
+    ADHOC_GO }o--|| GROUP_ORDER : "extends"
+    SUBSTITUTE_GO }o--|| GROUP_ORDER : "extends"
+
+    RECURRING_GO {
+        string scheduleId
+        string note "scope: all enrolled users"
+    }
+
+    ADHOC_GO {
+        string name
+        string createdBy
+        string note "scope: subset of enrolled users"
+    }
+
+    SUBSTITUTE_GO {
+        string replacesRecurringGoId
+        string note "scope: subset of enrolled users"
+    }
+
+    SUBSTITUTE_GO }o--|| RECURRING_GO : "replaces (one date)"
+    USER_ORDER }o--|| ENROLLED_USER : "placed by"
+    ENROLLED_USER }o--|| LOCATION : "enrolled at"
+    </div>
+  </section>
+
+  <!-- ── Type Cards ── -->
+  <section>
+    <div class="sec-label">GO Types at a Glance</div>
+    <div class="cards">
+
+      <div class="card">
+        <div class="card-header recurring">
+          <div class="card-title">Recurring GO</div>
+          <span class="card-badge">Auto-generated</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Created by the schedule engine</li>
+            <li>Fires when a Schedule Rule matches the date</li>
+            <li>Linked to a Schedule via scheduleId</li>
+            <li>Visible to all enrolled users at the location</li>
+            <li>One per location per date</li>
+            <li>Subsidy &amp; UGOM inherited from location</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header adhoc">
+          <div class="card-title">Adhoc GO</div>
+          <span class="card-badge">CSM Manual</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Created manually by a CSM for a one-off need</li>
+            <li>Not linked to any Schedule</li>
+            <li>Scoped to a selected subset of enrolled users</li>
+            <li>Multiple can exist on the same date</li>
+            <li>CSM can override subsidy amount &amp; UGOM</li>
+            <li>Cutoff capped at 5 PM the day before</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header substitute">
+          <div class="card-title">Substitute GO</div>
+          <span class="card-badge">CSM Manual · Planned</span>
+        </div>
+        <div class="card-body">
+          <ul>
+            <li>Replaces one specific recurring GO instance</li>
+            <li>Linked via replacesRecurringGoId</li>
+            <li>The recurring GO for that date is cancelled</li>
+            <li>Scoped to a subset (can differ from full enrolled set)</li>
+            <li>One substitute per replaced recurring GO per date</li>
+            <li>Subsidy &amp; UGOM rules TBD</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Date Coexistence ── -->
+  <section>
+    <div class="sec-label">How GOs Coexist on a Single Date</div>
+    <div class="scenarios">
+
+      <div>
+        <div class="scenario-label">Scenario A — Normal week (recurring + adhoc)</div>
+        <div class="date-box">
+          <div class="date-label">Wednesday, May 6 2026</div>
+          <div class="location-label">📍 HQ Office</div>
+          <div class="go-row recurring">
+            <span class="go-type-pill">Recurring</span>
+            <span class="go-name">Weekly Wednesday Lunch</span>
+            <span class="go-scope">All enrolled</span>
+          </div>
+          <div class="go-row adhoc">
+            <span class="go-type-pill">Adhoc</span>
+            <span class="go-name">Executive Team Lunch</span>
+            <span class="go-scope">8 users</span>
+          </div>
+          <div class="go-row adhoc">
+            <span class="go-type-pill">Adhoc</span>
+            <span class="go-name">New Hire Welcome</span>
+            <span class="go-scope">5 users</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="scenario-label">Scenario B — Holiday week (substitute replaces recurring)</div>
+        <div class="date-box">
+          <div class="date-label">Wednesday, May 27 2026</div>
+          <div class="location-label">📍 HQ Office</div>
+          <div class="go-row cancelled">
+            <span class="go-type-pill">Recurring</span>
+            <span class="go-name struck">Weekly Wednesday Lunch</span>
+            <span class="go-scope">Substituted out</span>
+          </div>
+          <div class="go-row substitute">
+            <span class="go-type-pill">Substitute</span>
+            <span class="go-name">Memorial Day Cookout</span>
+            <span class="go-scope">All enrolled</span>
+          </div>
+          <div class="go-row adhoc">
+            <span class="go-type-pill">Adhoc</span>
+            <span class="go-name">Leadership Off-site</span>
+            <span class="go-scope">6 users</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="callout">
+      <strong>Key rule:</strong> Adhoc GOs are always independent — separate menus, orders, subsidy, and billing. They coexist with recurring and substitute GOs without conflict. A substitute GO only cancels the recurring instance it explicitly replaces; it has no effect on any adhoc GOs on the same date.
+    </div>
+  </section>
+
+  <!-- ── Comparison Table ── -->
+  <section>
+    <div class="sec-label">Side-by-Side Comparison</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Recurring GO</th>
+          <th>Adhoc GO</th>
+          <th>Substitute GO</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="row-label">Created by</td>
+          <td class="col-recurring">Schedule engine (auto)</td>
+          <td class="col-adhoc">CSM (manual)</td>
+          <td class="col-substitute">CSM (manual) — planned</td>
+        </tr>
+        <tr>
+          <td class="row-label">Triggered by</td>
+          <td class="col-recurring">Schedule Rule match</td>
+          <td class="col-adhoc">One-off need</td>
+          <td class="col-substitute">Holiday / exception</td>
+        </tr>
+        <tr>
+          <td class="row-label">User scope</td>
+          <td class="col-recurring">All enrolled users</td>
+          <td class="col-adhoc">Subset of enrolled users</td>
+          <td class="col-substitute">Subset of enrolled users</td>
+        </tr>
+        <tr>
+          <td class="row-label">Linked to Schedule</td>
+          <td class="col-recurring">Yes (scheduleId)</td>
+          <td class="col-adhoc">No</td>
+          <td class="col-substitute">No</td>
+        </tr>
+        <tr>
+          <td class="row-label">Replaces another GO</td>
+          <td class="col-recurring">No</td>
+          <td class="col-adhoc">No</td>
+          <td class="col-substitute">Yes — one recurring instance</td>
+        </tr>
+        <tr>
+          <td class="row-label">Multiple per date</td>
+          <td class="col-recurring">One per location</td>
+          <td class="col-adhoc">Many per location</td>
+          <td class="col-substitute">One per replaced recurring GO</td>
+        </tr>
+        <tr>
+          <td class="row-label">Subsidy amount</td>
+          <td class="col-recurring">Inherited from location</td>
+          <td class="col-adhoc">CSM override allowed</td>
+          <td class="col-substitute tbd">TBD</td>
+        </tr>
+        <tr>
+          <td class="row-label">UGOM overrides</td>
+          <td class="col-recurring">Location defaults</td>
+          <td class="col-adhoc">Per-GO override allowed</td>
+          <td class="col-substitute tbd">TBD</td>
+        </tr>
+        <tr>
+          <td class="row-label">Cutoff constraint</td>
+          <td class="col-recurring">Varies by schedule / rule</td>
+          <td class="col-adhoc">Max 5 PM day before</td>
+          <td class="col-substitute tbd">TBD</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "base",
+      themeVariables: {
+        primaryColor: "#3d4b53",
+        primaryTextColor: "#ffffff",
+        primaryBorderColor: "#3d4b53",
+        lineColor: "#6b7280",
+        secondaryColor: "#f4f4f4",
+        tertiaryColor: "#f4f4f4",
+        fontFamily: "Poppins, sans-serif",
+        fontSize: "12px"
+      },
+      er: { layoutDirection: "TB" }
+    });
+  </script>
+</body>
+</html>
